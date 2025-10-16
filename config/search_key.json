@@ -1,0 +1,59 @@
+{   
+    "exam": {
+        "ExamCtdi":"Total CTDI",
+        "ExamDLP":"Total DLP"
+    },
+    "proto": {
+        "anatomy":"Anatomy",
+        "category":"Protocol Category",
+        "id":"Protocol#",
+        "name":"Protocol Name"
+    },
+    "series": {
+        "patientOrientation":"Orientation",
+        "patientPosition":"Position",
+        "anatomicalReference":"Landmark",
+        "patientPositionCopyFwdEnabled":"Copy Forward",
+        "autoVoiceLanguage":"Auto Voice Language",
+        "isAutoScanEnabled":"Auto Scan"
+    },
+    "group": {
+        "scanFieldOfViewType":"SFOV",
+        "kiloVolts":"kV",
+        "milliAmps":"mA",
+        "scoutPlane":"Scout Plane",
+        "groupDelay":"Prep/Group Delay",
+        "groupType":"Scan Type",
+        "rotationTime":"Rotation Time",
+        "scanSpacing":"Detector Coverage",
+        "numberOfPasses":"Number of Passes",
+        "scanInterval": "Scan Interval",
+        "pitch":"Pitch",
+        "coverageSpeed":"Coverage Speed",
+        "timeBetweenImages":"Time Between Images",
+        "CTDI": "CTDI",
+        "DLP":"DLP"
+    },
+    "recon": {
+        "isReconEnabled":"isRecon",
+        "reconImageThickness":"Recon Slice Thickness",
+        "reconKernel":"Recon Type",
+        "reconInterval":"Recon Interval",
+        "windowWidth":"Window Width",
+        "windowLevel":"Window Level",
+        "reconStartLocation":"Recon Start Location",
+        "reconEndLocation":"Recon End Location",
+        "reconNumberOfImages": "Recon Number of Images",
+        "mechanicalTilt":"Gantry Tilt",
+        "displayFieldOfView":"DFOV",
+        "reconClinicalIdKey":"Recon Clinical Identifier",
+        "reconClinicalIdCategoryKey":"Recon CID Catergory"
+    },
+    "subrecon": {
+        "name":"Name",
+        "srReconKernel":"Recon Type",
+        "srWindowLevel":"Window Level",
+        "srWindowWidth":"Window Width",
+        "numberOfViews":"Number of Image"
+    }
+}
