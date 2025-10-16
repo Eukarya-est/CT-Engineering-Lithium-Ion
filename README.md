@@ -9,10 +9,11 @@ So this script for extracting XML to arrange and translate test description and 
 From Product development team requirement.
 
 ## Objective
-[x] Implement user requirment
-[x] Improvement of efficiency from Lithium Project
+- [x] Implement user requirment
+- [x] Improvement of efficiency from Lithium Project
 
 ### It is different from real work thing.
+
 
 
 
