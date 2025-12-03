@@ -175,6 +175,12 @@ def extract_params(dir_no: int, dir_name: str, UIRx_xml: object):
     #❇ Define jrx namespace jrx:*
     jrx_ns = {'jrx': 'http://fct.med.xy.com/jrx'}
 
+    try:
+        check_point = addon.AddOn()
+    except Exception as error:
+        print(f"unexpected error occurred on To load Addon module;", error)
+        check_point = NoAddOn()
+
     #❇ jrx:exam
     exam = UIRx_xml.find('.//jrx:exam', jrx_ns)
     exam_index = 'exam'
@@ -194,6 +200,7 @@ def extract_params(dir_no: int, dir_name: str, UIRx_xml: object):
                 exam_element_value = exam_element.get('value')
                 _result[f'#{dir_no}'][f'{dir_name}'][f'{_search_key[exam_index][exam_element_name]}'] = translate(_search_key[exam_index][exam_element_name], exam_element_value)
     
+    _result[f'#{dir_no}'][f'{dir_name}'] = check_point.process(exam_index, _result[f'#{dir_no}'][f'{dir_name}'])
     #❇ jrx:proto
     proto = exam.find('.//jrx:proto', jrx_ns)
     proto_index = 'proto'
@@ -216,6 +223,7 @@ def extract_params(dir_no: int, dir_name: str, UIRx_xml: object):
                 proto_element_value = proto_element.get('value')
                 _result[f'#{dir_no}'][f'{dir_name}'][f'{_search_key[proto_index][proto_element_name]}'] = translate(_search_key[proto_index][proto_element_name], proto_element_value)
 
+    _result[f'#{dir_no}'][f'{dir_name}'] = check_point.process(proto_index, _result[f'#{dir_no}'][f'{dir_name}'])
     #❇ jrx:series
     series = proto.findall('.//jrx:series', jrx_ns)
     series_index = 'series'
@@ -243,7 +251,8 @@ def extract_params(dir_no: int, dir_name: str, UIRx_xml: object):
                 if series_element_name in _search_key[series_index].keys():
                     series_element_value = series_element.get('value')
                     _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{_search_key[series_index][series_element_name]}'] = translate(_search_key[series_index][series_element_name], series_element_value)
-
+        
+        _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'] = check_point.process(series_index, _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'])
         #❇❇ jrx:group
         #❇❇ groups of a series
         groups = a_series.findall('.//jrx:group', jrx_ns)
@@ -274,6 +283,7 @@ def extract_params(dir_no: int, dir_name: str, UIRx_xml: object):
                         group_element_value = group_element.get('value')
                         _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'][f'{_search_key[group_index][group_element_name]}'] = translate(_search_key[group_index][group_element_name], group_element_value)
 
+            _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'] = check_point.process(group_index, _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'])
             #❇❇❇ jrx:recon
             #❇❇❇ recon of group
             recons = group.findall('.//jrx:recon', jrx_ns)
@@ -304,6 +314,7 @@ def extract_params(dir_no: int, dir_name: str, UIRx_xml: object):
                             recon_element_value = recon_element.get('value')
                             _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'][f'{recon_title}'][f'{_search_key[recon_index][recon_element_name]}'] = translate(_search_key[recon_index][recon_element_name], recon_element_value)
 
+                _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'][f'{recon_title}'] = check_point.process(recon_index, _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'][f'{recon_title}'])
                 #❇❇❇❇ jrx:subrecon
                 #❇❇❇❇ subrecon of recon
                 subrecons = recon.findall('.//jrx:subrecon', jrx_ns)
@@ -692,6 +703,24 @@ def translate(key: str, value: str):
     return value
 
 """
+NoAddOn
+    If to load addOn module is failed, Use this class 
+"""
+class NoAddOn:
+    """
+    process
+
+    @param
+        - part: xml part, i.e. 'exam', 'proto, 'series', 'group', 'recon', 'subrecon'
+        - dict: key-values of part 
+
+    @return
+        - dict: key-values of part
+    """
+    def process(self, part: str, dict: dict) -> dict:
+        return dict
+
+"""
 Init
     (1) Exatract protocol's number from '.protoMiscInfo.xml'  
     (2) Create value dictionary from jsons
@@ -718,4 +747,5 @@ if __name__ == '__main__':
     
     # (3) Prime
     prime()
+
 
