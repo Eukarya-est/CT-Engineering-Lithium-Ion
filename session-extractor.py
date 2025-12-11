@@ -4,7 +4,6 @@ import sys
 import os
 import time
 import json
-import csv
 
 import xml.etree.ElementTree as ET
 from collections import OrderedDict
@@ -12,6 +11,7 @@ import config.path as target
 import config.name as file
 import config.subrecon as numberOf
 import config.const as const
+import config.addOn as addon
 
 # Global variables
 _start_time = 'TIME'
@@ -29,7 +29,7 @@ _num_of_subrecon: int = 0 # The number of subrecon
 
 _protocol_no_list = OrderedDict() # protocol's number(id) list
 
-_TAB = '\t' # Next Cell (tab⇄)
+_COMMA = ',' # Next Cell (,)
 _ENTER = '\n' # New line (enter↲)
 
 """
@@ -64,45 +64,38 @@ def prime():
 
 """
 main (Controller)
-    (1) Create a .txt file
+    (1) Create a .csv file
     (2) Call directories in order
-    (3) Convert .txt to .csv
 """
 def main():
     file_name = _site_name + "_" + time.strftime("%Y%m%d%H%M%S", _start_time)
-    # (1) Create a .txt file
+    # (1) Create a .csv file
     try:
-        txt_file_name = file_name + '.txt'
+        csv_file_name = file_name + '.csv'
 
-        with open(txt_file_name, 'w') as file:
+        with open(csv_file_name, 'w') as file:
             # Header space
             for _ in range(2):
                 file.write(_ENTER)
 
     except Exception as error:
-        print("Failed to create .txt file;", error)
+        print("Failed to create .csv file;", error)
     
     # (2) Call directories in order
-    factory(_site_list, 0, txt_file_name)
-
-    # (3) Convert .txt to .csv
-    try:
-        convert_txt_to_csv(file_name)
-    except Exception as error:
-        print("Failed to convert text to csv;", error)
+    factory(_site_list, 0, csv_file_name)
 
 """
 factory
-    (1) Parse 'UIRx.xml' ⇒ If failed to pase, sys.exit
+    (1) Parse 'UIRx.xml' ⇒ If failed to parse, sys.exit
     (2) Extract parameters
-    (3) Append contents to the .txt
-    (4) Create and append a header to the .txt
+    (3) Append contents to the .csv
+    (4) Create and append a header to the .csv
     (5) recusive call
 
 @param
     - site_list: list of directories in 'Site'
     - list_number: index of site_list
-    - file_name: file name of .txt
+    - file_name: file name of .csv
 """
 def factory(site_list: list, list_number: int, file_name: str):
     global _result
@@ -131,13 +124,13 @@ def factory(site_list: list, list_number: int, file_name: str):
     except Exception as error:
         print("Failed to extract protocol information;", error)
 
-    # (3) Append contents to the .txt
+    # (3) Append contents to the .csv
     try:
-        create_info_txt(dir_no, dir_name, file_name)
+        create_info_csv(dir_no, dir_name, file_name)
     except Exception as error:
-        print("Failed to append contents to the .txt.file;", error)
+        print("Failed to append contents to the .csv file;", error)
 
-    # (4) Create and append a header to the .txt
+    # (4) Create and append a header to the .csv
     try:
         create_header(dir_no, dir_name, file_name)
     except Exception as error:
@@ -344,9 +337,12 @@ def extract_params(dir_no: int, dir_name: str, UIRx_xml: object):
                             if subrecon_element_name in _search_key[subrecon_index].keys():
                                 subrecon_element_value = subrecon_element.get('value')
                                 _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'][f'{recon_title}'][f'{subrecon_title}'][f'{_search_key[subrecon_index][subrecon_element_name]}'] = translate(_search_key[subrecon_index][subrecon_element_name], subrecon_element_value)
+
+                    _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'][f'{recon_title}'][f'{subrecon_title}'] = check_point.process(subrecon_index, _result[f'#{dir_no}'][f'{dir_name}'][f'{series_title}'][f'{group_title}'][f'{recon_title}'][f'{subrecon_title}'])
+
 """
-create_info_txt
-Write protocol information to txt
+create_info_csv
+Write protocol information to csv
     (1) Write directory number and name
     (2) Write exam & protocol information
         ┕ Write series information
@@ -357,9 +353,9 @@ Write protocol information to txt
 @param
     - dir_no: directory number
     - dir_name: directory name
-    - file_name: filename of .txt
+    - file_name: filename of .csv
 """
-def create_info_txt(dir_no: int, dir_name: str, file_name: str):
+def create_info_csv(dir_no: int, dir_name: str, file_name: str):
     global _result
 
     # Open a text file to append the extracted information
@@ -367,32 +363,32 @@ def create_info_txt(dir_no: int, dir_name: str, file_name: str):
 
         # Write Contents
         # (1) Write target directory number and name
-        series_front = f'#{dir_no}' + _TAB + dir_name + _TAB
+        series_front = f'#{dir_no}' + _COMMA + dir_name + _COMMA
 
         # (2) Write exam & protocol information
         series_count = 1
         for exam_key in _result[f'#{dir_no}'][f'{dir_name}'].keys():
             # Weather value of dict contains only value or contains nested dict
             if not is_dict(_result[f'#{dir_no}'][dir_name][exam_key]):
-                series_front += _result[f'#{dir_no}'][dir_name][exam_key] + _TAB
+                series_front += _result[f'#{dir_no}'][dir_name][exam_key] + _COMMA
             # ┕ Write series information
             else:
-                group_front = series_front + str(series_count) + _TAB
+                group_front = series_front + str(series_count) + _COMMA
                 group_count = 1
                 for series_key in _result[f'#{dir_no}'][f'{dir_name}'][exam_key].keys():
                     # Weather value of dict contains only value or contains nested dict
                     if not is_dict(_result[f'#{dir_no}'][dir_name][exam_key][series_key]):
-                        group_front += _result[f'#{dir_no}'][dir_name][exam_key][series_key] + _TAB
+                        group_front += _result[f'#{dir_no}'][dir_name][exam_key][series_key] + _COMMA
                     # ┕ Write group information
                     else:
                         file.write(group_front)
                         file.write(str(group_count))
-                        file.write(_TAB)
+                        file.write(_COMMA)
                         for group_key in _result[f'#{dir_no}'][f'{dir_name}'][exam_key][series_key].keys():
                             # Weather value of dict contains only value or contains nested dict
                             if not is_dict(_result[f'#{dir_no}'][dir_name][exam_key][series_key][group_key]):
                                 file.write(_result[f'#{dir_no}'][dir_name][exam_key][series_key][group_key])
-                                file.write(_TAB)
+                                file.write(_COMMA)
                             # ┕ Write recon information
                             else:
                                 subrecon_count = 1 
@@ -400,7 +396,7 @@ def create_info_txt(dir_no: int, dir_name: str, file_name: str):
                                     # Weather value of dict contains only value or contains nested dict
                                     if not is_dict(_result[f'#{dir_no}'][dir_name][exam_key][series_key][group_key][recon_key]):
                                         file.write(_result[f'#{dir_no}'][dir_name][exam_key][series_key][group_key][recon_key])
-                                        file.write(_TAB)
+                                        file.write(_COMMA)
                                     # ┕ Write subrecon information
                                     else:
                                         if subrecon_count < _num_of_subrecon + 1:
@@ -408,14 +404,14 @@ def create_info_txt(dir_no: int, dir_name: str, file_name: str):
                                                 # Weather value of dict contains only value or contains nested dict
                                                 if not is_dict(_result[f'#{dir_no}'][dir_name][exam_key][series_key][group_key][recon_key][subrecon_key]):
                                                     file.write(_result[f'#{dir_no}'][dir_name][exam_key][series_key][group_key][recon_key][subrecon_key])
-                                                    file.write(_TAB)
+                                                    file.write(_COMMA)
                                                 else:
                                                     pass
                                             subrecon_count += 1
                                 # Write empty cell of subrecon
                                 while(subrecon_count < _num_of_subrecon + 1):
                                     for _ in range(len(_search_key['subrecon'])):
-                                        file.write(_TAB)
+                                        file.write(_COMMA)
                                     subrecon_count += 1
                         group_count += 1
                         # New line for each group  
@@ -433,36 +429,36 @@ Create header
 @param
     - dir_no: directory number
     - dir_name: directory name
-    - file_name: filename of .txt
+    - file_name: filename of .csv
 """
 def create_header(dir_no: int, dir_name: str, file_name : str):
     # Init header
-    header_row1 = _TAB + time.strftime("%Y-%m-%d %H:%M:%S", _start_time) + _TAB + 'Recon Name'
-    header_row2 = 'No.' + _TAB + 'Session Name' + _TAB 
+    header_row1 = _COMMA + time.strftime("%Y-%m-%d %H:%M:%S", _start_time) + _COMMA + 'Recon Name'
+    header_row2 = 'No.' + _COMMA + 'Session Name' + _COMMA 
 
     # (1) Create exam parameter header
     for exam_key in _search_key['exam'].values():
-        header_row1 += _TAB
-        header_row2 += exam_key + _TAB
+        header_row1 += _COMMA
+        header_row2 += exam_key + _COMMA
 
     # (2) Create protocol parameter header
     for proto_key in _search_key['proto'].values():
-        header_row1 += _TAB
-        header_row2 += proto_key + _TAB
+        header_row1 += _COMMA
+        header_row2 += proto_key + _COMMA
 
-    header_row1 += _TAB
-    header_row2 += 'Series' + _TAB
+    header_row1 += _COMMA
+    header_row2 += 'Series' + _COMMA
     # (3) Create series parameter header
     for series_key in _search_key['series'].values():
-        header_row1 += _TAB
-        header_row2 += series_key + _TAB
+        header_row1 += _COMMA
+        header_row2 += series_key + _COMMA
 
-    header_row1 += _TAB
-    header_row2 += 'Group' + _TAB
+    header_row1 += _COMMA
+    header_row2 += 'Group' + _COMMA
     # (4) Create group parameter header
     for group_key in _search_key['group'].values():
-        header_row1 += _TAB
-        header_row2 += group_key + _TAB
+        header_row1 += _COMMA
+        header_row2 += group_key + _COMMA
 
     # (5) Create recon parameter header
     max_length_titles = str()
@@ -484,8 +480,8 @@ def create_header(dir_no: int, dir_name: str, file_name : str):
                     second_recon_count += 1
 
                 for recon_key in _search_key['recon'].values():
-                    recon_titles += _TAB
-                    recon_params += recon_key + _TAB
+                    recon_titles += _COMMA
+                    recon_params += recon_key + _COMMA
                 
                 # For header of Subrecon in Recon If '_num_of_subrecon' > 0
                 if _num_of_subrecon > 0:
@@ -493,8 +489,8 @@ def create_header(dir_no: int, dir_name: str, file_name : str):
                     for sub_recon_count in range(_num_of_subrecon):
                         recon_titles += 'SubRecon' + str(sub_recon_count + 1)
                         for subrecon_key in _search_key['subrecon'].values():
-                            recon_titles += _TAB
-                            recon_params += subrecon_key + _TAB
+                            recon_titles += _COMMA
+                            recon_params += subrecon_key + _COMMA
 
             # Update for header (with the longest one) 
             if len(max_length_titles) < len(recon_titles):
@@ -506,16 +502,16 @@ def create_header(dir_no: int, dir_name: str, file_name : str):
     header_row1 += max_length_titles + _ENTER
     header_row2 += max_length_params + _ENTER
 
-    # Write contents of header to .txt file
+    # Write contents of header to .csv file
     write_header(file_name, 0, header_row1)
     write_header(file_name, 1, header_row2)
 
 """ 
 write_header
-Write contents of header to .txt file
+Write contents of header to .csv file
 
 @param
-    - file_name: filename of .txt
+    - file_name: filename of .csv
     - row_no: row number of header
     - contents: contents
 """
@@ -545,28 +541,6 @@ Weather variable is dictionary or not
 def is_dict(it):
 
     return isinstance(it, dict)
-
-"""
-convert_txt_to_csv
-Convert .txt to .csv
-
-@param
-    - file_name: file name of .txt
-"""
-def convert_txt_to_csv(file_name: str):
-    input_file_path = file_name + '.txt'
-    output_file_path = file_name + '.csv'
-    delimiter = '\t'  # Adjust based on your text file's delimiter
-
-    # Read .txt and Write .csv with contents of .txt
-    with open(input_file_path, 'r') as infile, open(output_file_path, 'w', newline='') as outfile:
-        reader = csv.reader(infile, delimiter=delimiter)
-        writer = csv.writer(outfile)
-
-        for row in reader:
-            writer.writerow(row)
-
-    print(f"Create '{file_name}.csv' successfully")
 
 """
 json_loader
@@ -700,7 +674,7 @@ def translate(key: str, value: str):
     else:
         pass
 
-    return value
+    return '\"' + value + '\"'
 
 """
 NoAddOn
@@ -736,7 +710,7 @@ if __name__ == '__main__':
     try:
         extract_misc_info()
     except Exception as error:
-        print("[Warning] .protoMiscInfo.xml is unavailable; Protocol No. is empty", error)
+        print("![Warning] .protoMiscInfo.xml is unavailable; 'Protocol No.' will be empty", error)
         pass
 
     # (2) Create value dictionary from jsons
@@ -747,5 +721,4 @@ if __name__ == '__main__':
     
     # (3) Prime
     prime()
-
 

@@ -56,6 +56,16 @@
         "2050":"Cardiac Small",
         "2052":"Cardiac Large"
     },
+    "kV Mode":{
+        "0":"Manual",
+        "1":"Assist",
+        "2":"GSI",
+        "3":"Auto Prescription"
+    },
+    "mA Mode":{
+        "0":"Manual",
+        "1":"Auto mA"
+    },
     "Scan Type":{
         "1":"Axial",
         "2048":"Cine",

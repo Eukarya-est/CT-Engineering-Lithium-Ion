@@ -20,6 +20,11 @@
     "group": {
         "scanFieldOfViewType":"SFOV",
         "kiloVolts":"kV",
+        "kiloVoltsMin":"Min kV",
+        "kiloVoltsMax":"Max kV",
+        "milliAmpsMode":"mA Mode",
+        "milliAmpsMin":"Min mA",
+        "milliAmpsMax":"Max mA",
         "milliAmps":"mA",
         "scoutPlane":"Scout Plane",
         "groupDelay":"Prep/Group Delay",
