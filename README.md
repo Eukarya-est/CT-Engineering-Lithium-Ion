@@ -14,6 +14,7 @@ From Product development team requirement.
 - [x] Implement user requirment
 - [x] Improvement of efficiency from Lithium Project
 
-### **It is different from real work thing. **
+### It is different from real work thing.
 
-### [User Manual](https://github.com/Eukarya-est/CT-Engineering-Lithium-Ion/blob/main/USER_MANUAL.md)
+### [User Manual(EN/JP)](https://github.com/Eukarya-est/CT-Engineering-Lithium-Ion/blob/main/USER_MANUAL.md)
+
