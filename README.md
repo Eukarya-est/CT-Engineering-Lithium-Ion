@@ -18,14 +18,14 @@ From Product development team requirement.
 
 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
 
-<img width="640" height="250" alt="image" src="https://github.com/user-attachments/assets/ee276a8b-aaf2-4420-be6d-5629ff23b759" />
-
+<img width="1640" height="640" alt="image" src="https://github.com/user-attachments/assets/ee276a8b-aaf2-4420-be6d-5629ff23b759" />
 
 ## Objective
 - [x] Implement user requirment
 - [x] Improvement of efficiency from Lithium Project
 
 ### 💡It is different from real work thing.
+
 
 
 
