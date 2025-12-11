@@ -18,7 +18,8 @@ From Product development team requirement.
 - [x] Implement user requirment
 - [x] Improvement of efficiency from Lithium Project
 
-### It is different from real work thing.
+### 💡It is different from real work thing.
+
 
 
 
