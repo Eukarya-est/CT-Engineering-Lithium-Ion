@@ -14,11 +14,17 @@ From Product development team requirement.
 
 [Result(csv raw)](https://github.com/Eukarya-est/CT-Engineering-Lithium-Ion/blob/main/CT_Engineering_20251016060438.csv)
 
+<img width="640" height="640" alt="image" src="https://github.com/user-attachments/assets/23d93191-49d4-4cc4-8a04-1f2c7458d9d1" />
+🔽🔽🔽🔽🔽
+<img width="640" height="250" alt="image" src="https://github.com/user-attachments/assets/ee276a8b-aaf2-4420-be6d-5629ff23b759" />
+
+
 ## Objective
 - [x] Implement user requirment
 - [x] Improvement of efficiency from Lithium Project
 
 ### 💡It is different from real work thing.
+
 
 
 
