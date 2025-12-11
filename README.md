@@ -22,9 +22,15 @@ From Product development team requirement.
 
 ## Objective
 - [x] Implement user requirment
+  - Increase parameter displayed
+  - Change Arrangement Style (Focus on Group, Recon)
+  - Remove value mismatched (e.g. "If kv Mode = manual, min kv and max kv are N/A, but displayed.")
 - [x] Improvement of efficiency from Lithium Project
+  - Recusive call for each directory in 'Site'
+  - Write contents to csv partially. 
 
 ### 💡It is different from real work thing.
+
 
 
 
